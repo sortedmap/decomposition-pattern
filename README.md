@@ -54,6 +54,8 @@ npm run setup
 | `npm run setup -- --detect --clean` | Автоопределение среды по окружению |
 | `npm run init:platforms -- --tools cursor` | Только перегенерация `SKILL.md` (без OpenSpec и runtime) |
 | `npm run openspec -- <args>` | Локальный OpenSpec CLI (например `init`, `--version`) |
+| `npm run prototype:install` | `npm install` в `prototype/` (после создания агентом) |
+| `npm run prototype:dev` | Vite dev server для прототипа |
 
 Для GitHub Copilot skill создаётся в `.github/skills/` — при `--clean` удаляется только эта подпапка, не `.github/workflows/`.
 
@@ -69,6 +71,28 @@ npm run setup
 Или с явной платформой: `/build-product --platform claude`
 
 Оркестратор проведёт через 14 фаз: сбор требований → прототип → архитектура → backend → тесты → frontend → deploy → frontend e2e.
+
+### Прототип (фаза 4)
+
+После фазы prototype в проекте появится папка `prototype/` — **отдельное** Vite-приложение. Корневой `npm install` **не** ставит его зависимости.
+
+```bash
+cd prototype
+npm install
+npm run dev
+# → http://localhost:5173 (или URL из вывода Vite)
+```
+
+Или из корня (когда `prototype/` уже создан):
+
+```bash
+npm run prototype:install
+npm run prototype:dev
+```
+
+**Важно:** открывайте URL из `npm run dev`. Не используйте Live Preview и не открывайте `index.html` напрямую — Tailwind CSS v4 работает только через Vite.
+
+Подробнее: [`prototype/README.md`](prototype/README.md) (копируется из шаблона).
 
 ### Смена AI-среды
 
@@ -332,7 +356,7 @@ my-product/
 │   └── {service}/
 │       ├── api.yaml
 │       └── db.md
-├── prototype/                # на этапе прототипа
+├── prototype/                # на этапе прототипа (см. prototype/README.md)
 ├── frontend/                 # после интеграции
 │   └── tests/
 ├── backend/

@@ -44,7 +44,8 @@ Actions:
 4. If phase ready — delegate using `.project/runtime.json` delegation mode (see `platforms/delegation/`)
 5. Update .project/state.json after each completed subagent
 6. Set tests.frontend = passed ONLY after agent 11 reports Playwright exit 0 vs state.baseUrl
-7. Report progress to user in Russian
+7. At prototype gate: start dev server (background), give user full launch block + Live Preview warning (playbooks/02-prototype.md)
+8. Report progress to user in Russian
 
 Do NOT write application code. Delegate only.
 ```

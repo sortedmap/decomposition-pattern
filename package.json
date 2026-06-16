@@ -11,7 +11,9 @@
     "setup:clean": "node scripts/setup.mjs --detect --clean",
     "init:platforms": "node scripts/generate-platform-skills.mjs",
     "validate": "node scripts/validate-registry.mjs",
-    "openspec": "openspec"
+    "openspec": "openspec",
+    "prototype:install": "npm install --prefix prototype",
+    "prototype:dev": "npm run dev --prefix prototype"
   },
   "devDependencies": {
     "@fission-ai/openspec": "^1.4.1"

@@ -36,7 +36,8 @@ Create `.project/runtime.json` during bootstrap — see [bootstrap.md](bootstrap
 | discovery | Delegate: 01-system-analyst | tech_stack | user approves requirements.md |
 | tech_stack | Delegate: 02-tech-advisor | pages | user approves tech-stack.md |
 | pages | Delegate: 01-system-analyst (pages) | prototype | user approves pages-spec.md |
-| prototype | Delegate: 03-prototype-designer | prototype | npm run dev OK |
+| prototype | Delegate: 03-prototype-designer | prototype | dev server + styled UI OK |
+| prototype | Orchestrator: `npm install`, start `npm run dev` (background), message user | prototype | user reviews styled UI |
 | prototype | Delegate: 04-prototype-reviewer (loop) | prototype_review | user approves OR max 5 iterations |
 | prototype_review | batch questions → deploy.json | batch_approvals | all batch answers recorded |
 | batch_approvals | Delegate: 05-architect | architecture | **auto:** `docs/architecture.md` complete → `approvals.architecture = true` |
@@ -86,6 +87,18 @@ Write answers to `.project/deploy.json`:
 ```
 
 Set `approvals.batchApprovals = true`.
+
+## Prototype gate (user review)
+
+After agent 03 completes:
+
+1. `cd prototype && npm install` (root `npm install` does **not** install prototype deps)
+2. Start dev server: `npm run dev` in background — **do not** gate on `npm run build` alone
+3. Tell user full launch block (see `playbooks/02-prototype.md` template):
+   - `cd prototype && npm install && npm run dev`
+   - Open Vite URL from stdout (usually `http://localhost:5173`)
+   - **Warn:** no Live Preview / no opening `index.html` directly — Tailwind requires Vite
+4. Wait for user approval of **styled** prototype
 
 ## Parallel agent limits
 
