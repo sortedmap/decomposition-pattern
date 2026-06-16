@@ -57,6 +57,8 @@ openspec/changes/*/
 .trae/
 .vibe/
 .windsurf/
+.cursorindexingignore
+
 # GitHub Copilot skills only — keep .github/workflows if you add them later
 .github/skills/
 
