@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+templates/prototype/node_modules/
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# SSH keys (never commit)
+.ssh/
+
+# Project runtime state (generated per product)
+.project/state.json
+.project/deploy.json
+
+# OpenSpec runtime
+openspec/changes/*/
+!openspec/changes/_template/
+
+# SpecStory
+.specstory/
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Test artifacts
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*

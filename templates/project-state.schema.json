@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Build Product State",
+  "type": "object",
+  "required": ["phase", "projectName", "approvals", "tests"],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "enum": [
+        "bootstrap",
+        "discovery",
+        "tech_stack",
+        "pages",
+        "prototype",
+        "prototype_review",
+        "batch_approvals",
+        "architecture",
+        "api_design",
+        "gateway",
+        "backend",
+        "backend_tests",
+        "frontend",
+        "deploy",
+        "frontend_tests",
+        "done"
+      ]
+    },
+    "projectName": { "type": "string" },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "requirements": { "type": "boolean" },
+        "techStack": { "type": "boolean" },
+        "pages": { "type": "boolean" },
+        "prototype": { "type": "boolean" },
+        "batchApprovals": { "type": "boolean" },
+        "architecture": { "type": "boolean" },
+        "apiSpecs": { "type": "boolean" }
+      }
+    },
+    "services": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "deployTarget": {
+      "type": ["string", "null"],
+      "enum": ["local", "remote", null]
+    },
+    "tests": {
+      "type": "object",
+      "properties": {
+        "backend": { "type": "string", "enum": ["pending", "running", "passed", "failed"] },
+        "frontend": { "type": "string", "enum": ["pending", "running", "passed", "failed"] }
+      }
+    },
+    "baseUrl": { "type": ["string", "null"] },
+    "prototypeReviewIterations": { "type": "integer", "maximum": 5 },
+    "testFixIterations": {
+      "type": "object",
+      "properties": {
+        "backend": { "type": "integer", "maximum": 3 },
+        "frontend": { "type": "integer", "maximum": 3 }
+      }
+    }
+  }
+}

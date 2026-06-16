@@ -1,0 +1,15 @@
+{
+  "target": "local",
+  "ssh": {
+    "key": ".ssh/id_rsa",
+    "host": "",
+    "user": "",
+    "appPath": "/var/www/app"
+  },
+  "infra": {
+    "messageBroker": false,
+    "objectStorage": false
+  },
+  "ci": "none",
+  "domain": null
+}
