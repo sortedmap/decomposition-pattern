@@ -22,13 +22,13 @@ server: {
 
 ## Route → API table (document in frontend/README.md)
 
-Example for a CRM-like project:
+Example for an MSA web application:
 
 | Route | API |
 |-------|-----|
-| `/` | GET /tasks/overdue, /deals/widget, /statistics/deals |
-| `/deals` | GET /deals |
-| `/clients` | GET /companies |
+| `/` | GET /orders/summary, /statistics/overview |
+| `/catalog` | GET /products |
+| `/orders` | GET /orders |
 
 ## Verify
 

@@ -1,0 +1,9 @@
+{
+  "platformId": "cursor",
+  "platformName": "Cursor",
+  "delegation": "task-tool",
+  "parallelAgents": true,
+  "commandSyntax": "hyphen",
+  "detected": false,
+  "configuredTools": ["cursor"]
+}

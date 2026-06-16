@@ -35,17 +35,17 @@ For each service in `services[]` (max 4 parallel Tasks):
 - `created_at`, `updated_at` on all tables
 - Cross-service refs: UUID without FK
 
-## Типичный mapping (CRM-подобный проект)
+## Типичный mapping (веб-приложение на MSA)
 
 | Frontend area | Likely service |
 |---------------|----------------|
-| Auth, profile | identity-service |
-| Clients, companies | client-service |
-| Deals, pipeline | deal-service |
+| Auth, profile | auth-service |
+| Catalog, products | catalog-service |
+| Orders, checkout | order-service |
 | Tasks, calendar | task-service |
 | Documents | document-service |
 | Dashboard stats | analytics-service |
-| Mailings | marketing-service |
-| Knowledge base | knowledge-service |
+| Notifications | notification-service |
+| Content, FAQ | content-service |
 
 Adjust based on actual requirements — not every project needs all 8.

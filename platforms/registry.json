@@ -1,0 +1,246 @@
+{
+  "$comment": "Tool IDs aligned with OpenSpec openspec init --tools. See https://github.com/Fission-AI/OpenSpec/blob/main/docs/supported-tools.md",
+  "tools": [
+    {
+      "id": "amazon-q",
+      "name": "Amazon Q Developer",
+      "skillsDir": ".amazonq/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "antigravity",
+      "name": "Antigravity",
+      "skillsDir": ".agent/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "auggie",
+      "name": "Auggie",
+      "skillsDir": ".augment/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "bob",
+      "name": "IBM Bob Shell",
+      "skillsDir": ".bob/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "claude",
+      "name": "Claude Code",
+      "skillsDir": ".claude/skills",
+      "delegation": "subagent",
+      "commandSyntax": "colon",
+      "parallelAgents": true
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "skillsDir": ".cline/skills",
+      "delegation": "subagent",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "skillsDir": ".codex/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false,
+      "notes": "Commands may install to $CODEX_HOME/prompts/"
+    },
+    {
+      "id": "forgecode",
+      "name": "ForgeCode",
+      "skillsDir": ".forge/skills",
+      "delegation": "skill-only",
+      "commandSyntax": "skill",
+      "parallelAgents": false
+    },
+    {
+      "id": "codebuddy",
+      "name": "CodeBuddy",
+      "skillsDir": ".codebuddy/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "continue",
+      "name": "Continue",
+      "skillsDir": ".continue/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "costrict",
+      "name": "CoStrict",
+      "skillsDir": ".cospec/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "crush",
+      "name": "Crush",
+      "skillsDir": ".crush/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor",
+      "skillsDir": ".cursor/skills",
+      "delegation": "task-tool",
+      "commandSyntax": "hyphen",
+      "parallelAgents": true
+    },
+    {
+      "id": "factory",
+      "name": "Factory Droid",
+      "skillsDir": ".factory/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini CLI",
+      "skillsDir": ".gemini/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "github-copilot",
+      "name": "GitHub Copilot",
+      "skillsDir": ".github/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "iflow",
+      "name": "iFlow",
+      "skillsDir": ".iflow/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "junie",
+      "name": "Junie",
+      "skillsDir": ".junie/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "kilocode",
+      "name": "Kilo Code",
+      "skillsDir": ".kilocode/skills",
+      "delegation": "subagent",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi CLI",
+      "skillsDir": ".kimi/skills",
+      "delegation": "skill-only",
+      "commandSyntax": "skill",
+      "parallelAgents": false
+    },
+    {
+      "id": "kiro",
+      "name": "Kiro",
+      "skillsDir": ".kiro/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "lingma",
+      "name": "Lingma",
+      "skillsDir": ".lingma/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "skillsDir": ".opencode/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "pi",
+      "name": "Pi",
+      "skillsDir": ".pi/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "qoder",
+      "name": "Qoder",
+      "skillsDir": ".qoder/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "qwen",
+      "name": "Qwen Code",
+      "skillsDir": ".qwen/skills",
+      "delegation": "slash-command",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "roocode",
+      "name": "RooCode",
+      "skillsDir": ".roo/skills",
+      "delegation": "subagent",
+      "commandSyntax": "hyphen",
+      "parallelAgents": false
+    },
+    {
+      "id": "trae",
+      "name": "Trae",
+      "skillsDir": ".trae/skills",
+      "delegation": "skill-only",
+      "commandSyntax": "skill",
+      "parallelAgents": false
+    },
+    {
+      "id": "vibe",
+      "name": "Mistral Vibe",
+      "skillsDir": ".vibe/skills",
+      "delegation": "skill-only",
+      "commandSyntax": "skill",
+      "parallelAgents": false
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf",
+      "skillsDir": ".windsurf/skills",
+      "delegation": "subagent",
+      "commandSyntax": "hyphen",
+      "parallelAgents": true
+    }
+  ]
+}

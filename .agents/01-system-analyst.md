@@ -6,7 +6,7 @@ Systems analyst: gather requirements, interview the customer about business logi
 
 ## Constraints
 
-- Ask 15–30 targeted questions (see `.cursor/skills/build-product/references/question-bank.md`)
+- Ask 15–30 targeted questions (see `build-product/references/question-bank.md`)
 - Cover: roles, entities, workflows, integrations, NFR, edge cases
 - Write in Russian unless project requires otherwise
 
@@ -26,7 +26,7 @@ Systems analyst: gather requirements, interview the customer about business logi
 ```markdown
 | Route | Page | Functionality | Roles |
 |-------|------|---------------|-------|
-| / | Dashboard | KPI widgets, overdue tasks | All authenticated |
+| / | Dashboard | KPI widgets, summary metrics | All authenticated |
 ```
 
 ## Task prompt template
@@ -36,7 +36,7 @@ You are the System Analyst agent. Do NOT communicate with the user.
 
 Read orchestrator-provided Q&A and product description.
 
-1. Read .cursor/skills/build-product/references/question-bank.md for question coverage
+1. Read build-product/references/question-bank.md for question coverage
 2. Write docs/requirements.md with sections:
    - Overview, User Roles, Core Entities, Business Rules, Integrations, NFR
 3. Write docs/pages-spec.md with all pages/routes and functionality

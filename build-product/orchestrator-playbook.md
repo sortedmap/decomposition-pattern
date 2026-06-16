@@ -26,27 +26,31 @@ Create `.project/state.json`:
 }
 ```
 
+Create `.project/runtime.json` during bootstrap — see [bootstrap.md](bootstrap.md).
+
 ## Phase transitions
 
 | From | Action | To | Gate |
 |------|--------|-----|------|
-| bootstrap | openspec init, set projectName | discovery | — |
-| discovery | Task: 01-system-analyst | discovery | user approves requirements.md |
-| discovery | Task: 02-tech-advisor | discovery | user approves tech-stack.md |
-| discovery | Task: 01-system-analyst (pages) | discovery | user approves pages-spec.md |
-| discovery | Task: 03-prototype-designer | prototype | npm run dev OK |
-| prototype | Task: 04-prototype-reviewer (loop) | prototype_review | user approves OR max 5 iterations |
+| bootstrap | detect platform → runtime.json; openspec init; set projectName | discovery | — |
+| discovery | Delegate: 01-system-analyst | discovery | user approves requirements.md |
+| discovery | Delegate: 02-tech-advisor | discovery | user approves tech-stack.md |
+| discovery | Delegate: 01-system-analyst (pages) | discovery | user approves pages-spec.md |
+| discovery | Delegate: 03-prototype-designer | prototype | npm run dev OK |
+| prototype | Delegate: 04-prototype-reviewer (loop) | prototype_review | user approves OR max 5 iterations |
 | prototype_review | batch questions → deploy.json | batch_approvals | all batch answers recorded |
-| batch_approvals | Task: 05-architect | architecture | user approves architecture.md |
-| architecture | Task: 06-api-designer × N (parallel) | api_design | user approves specs |
-| api_design | Task: 06-api-designer (gateway) | gateway | api-gateway.yaml exists |
-| gateway | Task: 07-backend-engineer × N (parallel, max 4) | backend | all services exist |
-| backend | Task: 07-backend-engineer (compose) | backend | docker-compose.yaml |
-| backend | Task: 08-backend-test-engineer × N | backend_tests | tests.backend = passed |
-| backend_tests | Task: 10-frontend-engineer | frontend | FE works with API |
-| frontend | Task: 09-devops-engineer | deploy | baseUrl set, health OK |
-| deploy | Task: 11-frontend-test-engineer | frontend_tests | tests.frontend = passed |
+| batch_approvals | Delegate: 05-architect | architecture | user approves architecture.md |
+| architecture | Delegate: 06-api-designer × N (parallel if allowed) | api_design | user approves specs |
+| api_design | Delegate: 06-api-designer (gateway) | gateway | api-gateway.yaml exists |
+| gateway | Delegate: 07-backend-engineer × N (parallel if allowed) | backend | all services exist |
+| backend | Delegate: 07-backend-engineer (compose) | backend | docker-compose.yaml |
+| backend | Delegate: 08-backend-test-engineer × N | backend_tests | tests.backend = passed |
+| backend_tests | Delegate: 10-frontend-engineer | frontend | FE works with API |
+| frontend | Delegate: 09-devops-engineer | deploy | baseUrl set, health OK |
+| deploy | Delegate: 11-frontend-test-engineer | frontend_tests | tests.frontend = passed |
 | frontend_tests | — | done | notify user |
+
+**Delegate** = follow `.project/runtime.json` → `delegation` mode in `platforms/delegation/`.
 
 ## Batch approvals (after prototype)
 
@@ -72,32 +76,36 @@ Write answers to `.project/deploy.json`:
 
 Set `approvals.batchApprovals = true`.
 
-## Parallel Task limits
+## Parallel agent limits
 
-- API design: one Task per service, max 4 concurrent
-- Backend implementation: one Task per service, max 4 concurrent
-- Backend tests: one Task per service, max 4 concurrent
+When `runtime.parallelAgents` is true (Cursor, Claude Code, Windsurf):
 
-Queue remaining services; launch next when slot frees.
+- API design: max 4 concurrent
+- Backend implementation: max 4 concurrent
+- Backend tests: max 4 concurrent
+
+Otherwise run agents **sequentially** (inline-role).
 
 ## Test fix loop
 
 When `tests.backend === "failed"` or subagent reports failures:
 
 1. Increment `testFixIterations.backend`
-2. If <= 3: re-launch 08-backend-test-engineer with failure log
+2. If <= 3: re-delegate 08-backend-test-engineer with failure log
 3. If > 3: ask user how to proceed
 
 Same for `testFixIterations.frontend` with 11-frontend-test-engineer.
 
 ## OpenSpec integration
 
+Use command syntax from `runtime.commandSyntax` (`colon` → `/opsx:propose`, `hyphen` → `/opsx-propose`):
+
 | Phase | OpenSpec action |
 |-------|-----------------|
-| discovery | `/opsx:propose "{projectName}"` → proposal + specs |
+| discovery | propose → proposal + specs |
 | architecture | update design.md in active change |
-| backend | `/opsx:apply` per task group |
-| done | `/opsx:archive` |
+| backend | apply per task group |
+| done | archive |
 
 Fallback: write to `docs/requirements.md`, `docs/tasks.md` without OpenSpec CLI.
 

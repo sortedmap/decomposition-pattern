@@ -6,8 +6,11 @@ OpenSpec хранит живые требования и change-артефакт
 
 ```bash
 npm install -g @fission-ai/openspec
-openspec init   # если ещё не инициализировано
+openspec init --tools cursor    # same tool IDs as decomposition-pattern
+npm run init:platforms -- --tools cursor
 ```
+
+Use the **same `--tools` list** for OpenSpec and `init:platforms`.
 
 ## Структура
 

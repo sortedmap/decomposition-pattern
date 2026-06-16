@@ -17,4 +17,4 @@
 | 10 | [.agents/10-frontend-engineer.md](.agents/10-frontend-engineer.md) | Frontend + API | `frontend/` |
 | 11 | [.agents/11-frontend-test-engineer.md](.agents/11-frontend-test-engineer.md) | Frontend-тесты | `frontend/tests/`, Playwright |
 
-Подробная документация: [README.md](README.md).
+Подробная документация: [README.md](README.md) · Платформы: [platforms/README.md](platforms/README.md)

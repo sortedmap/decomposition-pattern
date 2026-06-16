@@ -1,8 +1,8 @@
 # Decomposition Pattern — AI Product Factory
 
-Мультиагентный фреймворк для Cursor: от ТЗ заказчика до протестированного и развёрнутого продукта с микросервисной архитектурой.
+Мультиагентный фреймворк для **30+ AI-сред** (тот же список, что у OpenSpec): от ТЗ заказчика до протестированного и развёрнутого продукта с микросервисной архитектурой.
 
-**Запуск:** в Cursor вызовите skill `/build-product` и опишите продукт.
+**Запуск:** `/build-product` в вашей IDE (Cursor, Claude Code, Windsurf, Copilot и др.)
 
 ---
 
@@ -10,29 +10,119 @@
 
 ### Требования
 
-- [Cursor IDE](https://cursor.com)
+- Любая AI-среда из [списка OpenSpec](platforms/registry.json) (Cursor, Claude Code, Windsurf, …)
 - Node.js 20+
-- Docker и Docker Compose
-- OpenSpec (опционально, рекомендуется): `npm install -g @fission-ai/openspec`
+- Docker и Docker Compose (для фазы deploy)
+- OpenSpec (рекомендуется): `npm install -g @fission-ai/openspec`
+
+### Запуск с нуля
+
+```bash
+# 1. Клонировать шаблон
+git clone https://github.com/YOUR_ORG/decomposition-pattern.git my-product
+cd my-product
+
+# 2. (Опционально) OpenSpec CLI
+npm install -g @fission-ai/openspec
+
+# 3. Настроить одну AI-среду — в корне появится только её папка (.cursor/, .claude/, …)
+npm run setup -- --tool cursor --clean
+
+# Альтернативы:
+# npm run setup -- --detect --clean    # угадать среду по окружению
+# npm run setup                          # интерактивный выбор
+# npm run setup -- --tool claude --skip-openspec   # без openspec init
+```
+
+**Что делает `npm run setup`:**
+
+| Шаг | Действие |
+|-----|----------|
+| `--clean` | Удаляет папки других платформ (`.claude/`, `.windsurf/`, …) |
+| OpenSpec | `openspec init --tools <id>` (если CLI установлен) |
+| Skill | Генерирует `{skillsDir}/build-product/SKILL.md` для выбранной среды |
+| Runtime | Пишет `.project/runtime.json` — оркестратор знает режим делегирования |
+
+Список ID: `npm run setup -- --list`
+
+### npm-скрипты
+
+| Команда | Описание |
+|---------|----------|
+| `npm run setup` | Интерактивный выбор платформы |
+| `npm run setup -- --tool cursor --clean` | Настройка Cursor, удаление остальных platform-папок |
+| `npm run setup -- --detect --clean` | Автоопределение среды по окружению |
+| `npm run init:platforms -- --tools cursor` | Только перегенерация `SKILL.md` (без OpenSpec и runtime) |
+
+Для GitHub Copilot skill создаётся в `.github/skills/` — при `--clean` удаляется только эта подпапка, не `.github/workflows/`.
 
 ### Первый запуск
 
+1. Откройте папку проекта в выбранной IDE (например, Cursor).
+2. В чате агента:
+
+```
+/build-product Веб-приложение на основе MSA
+```
+
+Или с явной платформой: `/build-product --platform claude`
+
+Оркестратор проведёт через 14 фаз: сбор требований → прототип → архитектура → backend → тесты → frontend → deploy → frontend e2e.
+
+### Смена AI-среды
+
 ```bash
-git clone https://github.com/YOUR_ORG/decomposition-pattern.git my-product
-cd my-product
+npm run setup -- --tool windsurf --clean
 ```
 
-В Cursor:
-
-```
-/build-product CRM для малого бизнеса
-```
-
-Оркестратор последовательно проведёт через 14 фаз: сбор требований → прототип → архитектура → backend → тесты → frontend → deploy → frontend e2e.
+Переключит skill, runtime и (при наличии OpenSpec) конфиг — остальные platform-папки будут удалены.
 
 ### Что получится на выходе
 
-После прохождения всех 14 фаз `/build-product` создаёт полноценный проект: React frontend, N микросервисов с отдельными БД, API Gateway, docker-compose, автотесты backend и frontend e2e. Конкретный набор сервисов определяется вашим ТЗ — типичный CRM может включать identity, clients, deals, tasks, documents и analytics.
+После прохождения всех 14 фаз `/build-product` создаёт полноценный проект: React frontend, N микросервисов с отдельными БД, API Gateway, docker-compose, автотесты backend и frontend e2e. Конкретный набор сервисов определяется вашим ТЗ — типичное MSA-приложение может включать auth, catalog, orders, notifications и analytics.
+
+---
+
+## Поддерживаемые AI-среды
+
+Тот же список, что при `openspec init --tools` ([platforms/registry.json](platforms/registry.json)):
+
+| ID | Среда | Делегирование |
+|----|-------|---------------|
+| `amazon-q` | Amazon Q Developer | slash-command |
+| `antigravity` | Antigravity | slash-command |
+| `auggie` | Auggie | slash-command |
+| `bob` | IBM Bob Shell | slash-command |
+| `claude` | Claude Code | subagent |
+| `cline` | Cline | subagent |
+| `codex` | Codex | slash-command |
+| `forgecode` | ForgeCode | skill-only |
+| `codebuddy` | CodeBuddy | slash-command |
+| `continue` | Continue | slash-command |
+| `costrict` | CoStrict | slash-command |
+| `crush` | Crush | slash-command |
+| `cursor` | Cursor | task-tool |
+| `factory` | Factory Droid | slash-command |
+| `gemini` | Gemini CLI | slash-command |
+| `github-copilot` | GitHub Copilot | slash-command |
+| `iflow` | iFlow | slash-command |
+| `junie` | Junie | slash-command |
+| `kilocode` | Kilo Code | subagent |
+| `kimi` | Kimi CLI | skill-only |
+| `kiro` | Kiro | slash-command |
+| `lingma` | Lingma | slash-command |
+| `opencode` | OpenCode | slash-command |
+| `pi` | Pi | slash-command |
+| `qoder` | Qoder | slash-command |
+| `qwen` | Qwen Code | slash-command |
+| `roocode` | RooCode | subagent |
+| `trae` | Trae | skill-only |
+| `vibe` | Mistral Vibe | skill-only |
+| `windsurf` | Windsurf | subagent |
+
+Skill для выбранной среды: `{skillsDir}/build-product/SKILL.md` (генерируется `npm run setup`).
+
+Подробнее: [platforms/README.md](platforms/README.md)
 
 ---
 
@@ -99,8 +189,8 @@ sequenceDiagram
     Orchestrator->>Arch: Task: architecture.md
     Arch-->>Orchestrator: docs/architecture.md
     par Parallel services
-        Orchestrator->>BE: Task: identity-service
-        Orchestrator->>BE: Task: client-service
+        Orchestrator->>BE: Task: auth-service
+        Orchestrator->>BE: Task: catalog-service
     end
     BE-->>Orchestrator: backend/* готов
     Orchestrator->>BTest: Task: backend tests
@@ -114,7 +204,7 @@ sequenceDiagram
     Orchestrator->>User: Готово
 ```
 
-**Правило:** только оркестратор общается с пользователем. Subagent'ы получают промпты из [`.agents/`](.agents/) через Task tool (max 4 параллельных Task).
+**Правило:** только оркестратор общается с пользователем. Subagent'ы делегируются по режиму из `.project/runtime.json` (см. [platforms/delegation/](platforms/delegation/)).
 
 ---
 
@@ -177,7 +267,7 @@ OpenSpec — слой живых требований. Агенты читают
 
 ### Инициализация
 
-При первом `/build-product` оркестратор выполняет:
+OpenSpec инициализируется при `npm run setup` (если CLI установлен). При первом `/build-product` оркестратор также может выполнить:
 
 ```bash
 openspec init   # если openspec/ ещё нет
@@ -201,14 +291,23 @@ openspec init   # если openspec/ ещё нет
 
 ```
 decomposition-pattern/
-├── README.md                 ← вы здесь
+├── README.md
 ├── AGENTS.md
-├── .cursor/skills/build-product/
-├── .agents/                  ← 12 ролей subagent'ов
-├── templates/                ← стартеры для генерируемых проектов
-├── playbooks/                ← пошаговые инструкции по фазам
+├── package.json              ← npm run setup
+├── build-product/            ← ядро оркестратора (platform-agnostic)
+├── platforms/                ← registry.json + delegation modes
+├── scripts/
+│   ├── setup.mjs             ← одна платформа + runtime.json
+│   └── generate-platform-skills.mjs
+├── .cursor/skills/           ← только после setup --tool cursor
+├── .project/runtime.json     ← активная платформа
+├── .agents/
+├── templates/
+├── playbooks/
 └── openspec/
 ```
+
+Сгенерированные папки платформ (`.cursor/`, `.claude/`, …) в `.gitignore` — каждый разработчик запускает `npm run setup` локально.
 
 ---
 

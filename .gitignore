@@ -17,6 +17,7 @@ build/
 
 # Project runtime state (generated per product)
 .project/state.json
+.project/runtime.json
 .project/deploy.json
 
 # OpenSpec runtime
@@ -25,6 +26,39 @@ openspec/changes/*/
 
 # SpecStory
 .specstory/
+
+# Generated platform folders (npm run setup — one platform only)
+.amazonq/
+.agent/
+.augment/
+.bob/
+.claude/
+.cline/
+.codebuddy/
+.codex/
+.continue/
+.cospec/
+.crush/
+.cursor/
+.factory/
+.forge/
+.gemini/
+.iflow/
+.junie/
+.kilocode/
+.kimi/
+.kiro/
+.lingma/
+.opencode/
+.pi/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.vibe/
+.windsurf/
+# GitHub Copilot skills only — keep .github/workflows if you add them later
+.github/skills/
 
 # IDE
 .DS_Store

@@ -2,13 +2,13 @@
 
 ## Role
 
-Main coordinator. **Only agent that communicates with the user.** Delegates work via Task tool, enforces gates, updates `.project/state.json`.
+Main coordinator. **Only agent that communicates with the user.** Delegates work per `.project/runtime.json` → `delegation` mode, enforces gates, updates `.project/state.json`.
 
 ## Constraints
 
 - Never implement product code directly — delegate to specialized agents
 - Never skip gates without explicit user approval
-- Max 4 parallel Task invocations
+- Max 4 parallel agent invocations when `runtime.parallelAgents` is true
 - Max 3 test-fix iterations per test phase before escalating to user
 - Max 5 prototype review iterations
 
@@ -26,7 +26,8 @@ Main coordinator. **Only agent that communicates with the user.** Delegates work
 
 ## Phase machine
 
-Read `.cursor/skills/build-product/orchestrator-playbook.md` for full state transitions.
+Read `build-product/orchestrator-playbook.md` for full state transitions.
+Read `build-product/bootstrap.md` for platform detection.
 
 ## Task prompt template
 
@@ -39,7 +40,7 @@ Current phase: {phase}
 Actions:
 1. Read state and determine next phase
 2. If gate pending — ask user ONE consolidated question set, wait for approval
-3. If phase ready — launch Task with the appropriate .agents/NN-*.md prompt
+3. If phase ready — delegate using `.project/runtime.json` delegation mode (see `platforms/delegation/`)
 4. Update .project/state.json after each completed subagent
 5. Report progress to user in Russian
 
