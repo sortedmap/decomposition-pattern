@@ -43,7 +43,7 @@ Playbook: playbooks/03-architecture.md
 
 ```
 Merge all docs/*/api.yaml into docs/api-gateway.yaml.
-Add routing, auth (JWT), CORS. Follow templates/docs/service-api.yaml and consolidate into docs/api-gateway.yaml.
+Add routing, auth (JWT), CORS. Follow templates/docs/api-gateway.yaml and consolidate service paths.
 Single entry point for frontend at /api/v1/*
 ```
 

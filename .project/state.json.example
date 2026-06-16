@@ -1,0 +1,19 @@
+{
+  "phase": "bootstrap",
+  "projectName": "",
+  "approvals": {
+    "requirements": false,
+    "techStack": false,
+    "pages": false,
+    "prototype": false,
+    "batchApprovals": false,
+    "architecture": false,
+    "apiSpecs": false
+  },
+  "services": [],
+  "deployTarget": null,
+  "baseUrl": null,
+  "tests": { "backend": "pending", "frontend": "pending" },
+  "prototypeReviewIterations": 0,
+  "testFixIterations": { "backend": 0, "frontend": 0 }
+}

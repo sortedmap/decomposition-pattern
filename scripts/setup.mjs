@@ -20,7 +20,6 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const registry = loadRegistry(root);
 
 const PROTECTED_DIRS = new Set(['.agents', '.project']);
 
@@ -34,7 +33,8 @@ function parseArgs(argv) {
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--tool' && argv[i + 1]) args.tool = argv[++i];
+    if (a.startsWith('--tool=')) args.tool = a.slice('--tool='.length);
+    else if (a === '--tool' && argv[i + 1]) args.tool = argv[++i];
     else if (a === '--detect') args.detect = true;
     else if (a === '--clean') args.clean = true;
     else if (a === '--skip-openspec') args.skipOpenspec = true;
@@ -60,7 +60,7 @@ Examples:
 `);
 }
 
-function findTool(id) {
+function findTool(registry, id) {
   const tool = registry.tools.find((t) => t.id === id);
   if (!tool) {
     console.error(`Unknown platform: "${id}"`);
@@ -70,7 +70,17 @@ function findTool(id) {
   return tool;
 }
 
-function detectPlatform() {
+function readRuntimePlatformId() {
+  const path = join(root, '.project/runtime.json');
+  if (!existsSync(path)) return null;
+  try {
+    return JSON.parse(readFileSync(path, 'utf8')).platformId || null;
+  } catch {
+    return null;
+  }
+}
+
+function detectPlatform(registry) {
   if (process.env.CURSOR_AGENT || process.env.CURSOR_TRACE_ID) return 'cursor';
   if (process.env.CLAUDE_CODE || process.env.CLAUDECODE) return 'claude';
   if (process.env.WINDSURF_SESSION) return 'windsurf';
@@ -79,16 +89,18 @@ function detectPlatform() {
     existsSync(join(root, t.skillsDir, 'build-product', 'SKILL.md')),
   );
   if (existing.length === 1) return existing[0].id;
+  if (existing.length > 1) {
+    console.warn(`Multiple platform skills found: ${existing.map((t) => t.id).join(', ')}`);
+    console.warn('Pass --tool explicitly or use --clean after choosing one.');
+  }
 
-  const withSkillsDir = registry.tools.filter((t) =>
-    existsSync(join(root, platformRootDir(t.skillsDir))),
-  );
-  if (withSkillsDir.length === 1) return withSkillsDir[0].id;
+  const fromRuntime = readRuntimePlatformId();
+  if (fromRuntime) return fromRuntime;
 
   return null;
 }
 
-function promptPlatform() {
+function promptPlatform(registry) {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
       input: process.stdin,
@@ -112,15 +124,14 @@ function promptPlatform() {
   });
 }
 
-function cleanOtherPlatforms(activeToolId) {
-  const activeTool = findTool(activeToolId);
+function cleanOtherPlatforms(registry, activeToolId) {
+  const activeTool = findTool(registry, activeToolId);
   const activeRoot = platformRootDir(activeTool.skillsDir);
   let removed = 0;
 
   for (const tool of registry.tools) {
     if (tool.id === activeToolId) continue;
 
-    // GitHub Copilot: skills live under .github/skills — keep workflows/ etc.
     if (tool.skillsDir.startsWith('.github/')) {
       const skillPath = join(root, tool.skillsDir, 'build-product');
       if (!existsSync(skillPath)) continue;
@@ -142,7 +153,7 @@ function cleanOtherPlatforms(activeToolId) {
   return removed;
 }
 
-function writeRuntimeJson(tool) {
+function writeRuntimeJson(tool, detected) {
   mkdirSync(join(root, '.project'), { recursive: true });
   const runtime = {
     platformId: tool.id,
@@ -150,7 +161,7 @@ function writeRuntimeJson(tool) {
     delegation: tool.delegation,
     parallelAgents: tool.parallelAgents,
     commandSyntax: tool.commandSyntax,
-    detected: false,
+    detected,
     configuredTools: [tool.id],
   };
   writeFileSync(
@@ -167,11 +178,11 @@ function runOpenspecInit(toolId) {
     shell: process.platform === 'win32',
   });
   if (result.error?.code === 'ENOENT') {
-    console.warn('\n  openspec CLI not found — skip or: npm install -g @fission-ai/openspec');
+    console.warn('\n  openspec CLI not found — using docs/ fallback (npm install -g @fission-ai/openspec)');
     return false;
   }
   if (result.status !== 0) {
-    console.warn('\n  openspec init exited with non-zero status (continuing setup)');
+    console.warn('\n  openspec init failed — using docs/ fallback');
     return false;
   }
   return true;
@@ -185,28 +196,40 @@ async function main() {
     return;
   }
 
+  const registry = loadRegistry(root);
+
   if (args.list) {
     registry.tools.forEach((t) => console.log(`${t.id}\t${t.name}`));
     return;
   }
 
   let toolId = args.tool;
+  let wasDetected = false;
 
   if (!toolId && args.detect) {
-    toolId = detectPlatform();
-    if (toolId) console.log(`Detected platform: ${toolId}`);
+    toolId = detectPlatform(registry);
+    if (toolId) {
+      console.log(`Detected platform: ${toolId}`);
+      wasDetected = true;
+    }
+  }
+
+  if (!toolId && !process.stdin.isTTY) {
+    console.error('Non-interactive mode: pass --tool <id> or --detect');
+    console.error('Example: npm run setup -- --tool cursor --clean');
+    process.exit(1);
   }
 
   if (!toolId) {
-    toolId = await promptPlatform();
+    toolId = await promptPlatform(registry);
   }
 
-  const tool = findTool(toolId);
+  const tool = findTool(registry, toolId);
   console.log(`\nSetup for: ${tool.name} (${tool.id})\n`);
 
   if (args.clean) {
     console.log('Cleaning other platform folders…');
-    cleanOtherPlatforms(tool.id);
+    cleanOtherPlatforms(registry, tool.id);
   }
 
   if (!args.skipOpenspec) {
@@ -217,7 +240,7 @@ async function main() {
   console.log('Generating build-product skill…');
   generatePlatformSkills(root, [tool.id]);
 
-  writeRuntimeJson(tool);
+  writeRuntimeJson(tool, wasDetected);
 
   console.log(`
 Done. Next steps:

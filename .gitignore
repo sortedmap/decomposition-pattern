@@ -23,6 +23,7 @@ build/
 # OpenSpec runtime
 openspec/changes/*/
 !openspec/changes/_template/
+!openspec/changes/_template/**
 
 # SpecStory
 .specstory/

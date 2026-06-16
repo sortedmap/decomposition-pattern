@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Multi-agent framework for AI-assisted product development",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "setup": "node scripts/setup.mjs",
-    "setup:clean": "node scripts/setup.mjs --clean",
-    "init:platforms": "node scripts/generate-platform-skills.mjs"
+    "setup:clean": "node scripts/setup.mjs --detect --clean",
+    "init:platforms": "node scripts/generate-platform-skills.mjs",
+    "validate": "node scripts/validate-registry.mjs"
   }
 }

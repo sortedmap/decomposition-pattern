@@ -5,12 +5,17 @@ OpenSpec хранит живые требования и change-артефакт
 ## Setup
 
 ```bash
-npm install -g @fission-ai/openspec
-openspec init --tools cursor    # same tool IDs as decomposition-pattern
-npm run init:platforms -- --tools cursor
+npm install -g @fission-ai/openspec   # optional
+npm run setup -- --tool cursor --clean
 ```
 
-Use the **same `--tools` list** for OpenSpec and `init:platforms`.
+`npm run setup` вызывает `openspec init --tools <id>` автоматически (если CLI установлен).
+
+Перегенерация skill без полного setup:
+
+```bash
+npm run init:platforms -- --tools cursor
+```
 
 ## Структура
 
@@ -19,6 +24,7 @@ openspec/
 ├── specs/              # Постоянные спеки (после archive)
 └── changes/
     └── _template/      # Шаблон нового change
+        └── specs/      # Delta-specs per capability
 ```
 
 ## Workflow с агентами

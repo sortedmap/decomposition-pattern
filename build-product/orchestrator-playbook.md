@@ -33,10 +33,10 @@ Create `.project/runtime.json` during bootstrap — see [bootstrap.md](bootstrap
 | From | Action | To | Gate |
 |------|--------|-----|------|
 | bootstrap | detect platform → runtime.json; openspec init; set projectName | discovery | — |
-| discovery | Delegate: 01-system-analyst | discovery | user approves requirements.md |
-| discovery | Delegate: 02-tech-advisor | discovery | user approves tech-stack.md |
-| discovery | Delegate: 01-system-analyst (pages) | discovery | user approves pages-spec.md |
-| discovery | Delegate: 03-prototype-designer | prototype | npm run dev OK |
+| discovery | Delegate: 01-system-analyst | tech_stack | user approves requirements.md |
+| tech_stack | Delegate: 02-tech-advisor | pages | user approves tech-stack.md |
+| pages | Delegate: 01-system-analyst (pages) | prototype | user approves pages-spec.md |
+| prototype | Delegate: 03-prototype-designer | prototype | npm run dev OK |
 | prototype | Delegate: 04-prototype-reviewer (loop) | prototype_review | user approves OR max 5 iterations |
 | prototype_review | batch questions → deploy.json | batch_approvals | all batch answers recorded |
 | batch_approvals | Delegate: 05-architect | architecture | user approves architecture.md |

@@ -6,7 +6,7 @@
 ## Steps
 
 1. Orchestrator greets user, asks for initial product description
-2. Orchestrator asks 15–30 questions from `question-bank.md` (batch in 2–3 messages max)
+2. Orchestrator asks 15–30 questions from `build-product/references/question-bank.md` (batch in 2–3 messages max)
 3. Task → System Analyst: write `requirements.md`
 4. Gate: user approves requirements
 5. Task → Tech Advisor: write `tech-stack.md` with 3 options

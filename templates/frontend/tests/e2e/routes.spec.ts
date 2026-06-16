@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect } from './fixtures/auth';
 
 /**
  * Smoke test template — duplicate per route from docs/pages-spec.md

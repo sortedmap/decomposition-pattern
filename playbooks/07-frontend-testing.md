@@ -21,6 +21,19 @@ npm install -D @playwright/test
 npx playwright install chromium
 ```
 
+Add to `frontend/package.json`:
+
+```json
+{
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}
+```
+
+Copy `templates/frontend/tests/vitest.config.ts` and `vitest.setup.ts` to `frontend/tests/` (or project root — match `vitest.config.ts` paths).
+
 ## Unit tests
 
 Test key components:
