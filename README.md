@@ -389,7 +389,7 @@ my-product/
 ## Ограничения и риски
 
 - **Task tool** не гарантирует полную изоляцию subagent'ов — контракты в `.agents/` должны быть строгими
-- **OpenSpec** — опциональная npm-зависимость; есть fallback на markdown
+- **OpenSpec** — локальная dev-зависимость (`npm install`); без неё — fallback на markdown в `docs/`
 - **Параллельные сервисы** — max 4 concurrent Task
 - **Frontend e2e** — только после подтверждённого health check DevOps agent'ом
 - **SSH deploy** — только с явного разрешения пользователя
