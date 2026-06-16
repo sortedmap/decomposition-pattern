@@ -100,14 +100,19 @@ function detectPlatform(registry) {
   return null;
 }
 
+function sortedTools(registry) {
+  return [...registry.tools].sort((a, b) => a.id.localeCompare(b.id));
+}
+
 function promptPlatform(registry) {
+  const tools = sortedTools(registry);
   return new Promise((resolve) => {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
     console.log('\nSelect AI platform (OpenSpec tool ID):\n');
-    registry.tools.forEach((t, i) => {
+    tools.forEach((t, i) => {
       console.log(`  ${String(i + 1).padStart(2)}. ${t.id.padEnd(16)} ${t.name}`);
     });
     console.log('');
@@ -115,8 +120,8 @@ function promptPlatform(registry) {
       rl.close();
       const trimmed = (answer || 'cursor').trim();
       const num = parseInt(trimmed, 10);
-      if (!Number.isNaN(num) && num >= 1 && num <= registry.tools.length) {
-        resolve(registry.tools[num - 1].id);
+      if (!Number.isNaN(num) && num >= 1 && num <= tools.length) {
+        resolve(tools[num - 1].id);
         return;
       }
       resolve(trimmed);
@@ -213,7 +218,7 @@ async function main() {
   const registry = loadRegistry(root);
 
   if (args.list) {
-    registry.tools.forEach((t) => console.log(`${t.id}\t${t.name}`));
+    sortedTools(registry).forEach((t) => console.log(`${t.id}\t${t.name}`));
     return;
   }
 
