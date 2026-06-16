@@ -24,3 +24,23 @@ Task:
 ## Parallel backend services
 
 Launch up to 4 Tasks at once; queue remaining services from `.project/state.json` → `services[]`.
+
+## Parallel backend + frontend scaffold (after gateway)
+
+When `runtime.parallelAgents` is true, after gateway spec is ready:
+
+```
+par Parallel implementation (max 4 total)
+  Task → 07-backend-engineer per service (up to 4)
+  Task → 10-frontend-engineer phase A (scaffold) — one Task
+end
+```
+
+Queue excess backend services; run frontend phase A once (not per service).
+
+After all backend services exist + compose → backend tests → **10-frontend-engineer phase B** (sequential integration).
+
+## Deploy and e2e
+
+- **09-devops-engineer**: `subagent_type: shell` recommended (docker, rsync, curl smoke)
+- **11-frontend-test-engineer**: `subagent_type: shell` for Playwright; must use full `state.baseUrl`

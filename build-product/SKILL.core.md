@@ -34,18 +34,42 @@ Registry of all supported platforms: [platforms/registry.json](../platforms/regi
 3. Read `.project/state.json` (schema: [templates/project-state.schema.json](../templates/project-state.schema.json))
 4. If no `openspec/` — run `npm run openspec -- init` or use markdown fallback in `docs/`
 5. Determine current phase; execute ONE phase step
-6. At gates — ask user in Russian; wait for explicit approval
-7. Delegate per platform delegation mode (NOT always Task tool)
-8. Update `.project/state.json` after each subagent completes
+6. At **user-gates** — ask user in Russian; wait for explicit approval
+7. At **auto-gates** — verify artifact DoD, set `approvals.* = true`, advance without asking
+8. Delegate per platform delegation mode (NOT always Task tool)
+9. Update `.project/state.json` after each subagent completes
 
 ## Gate rules
 
-Never advance without:
+### Auto-gates (no user prompt)
 
-- `approvals.* === true` for the current gate
-- `tests.backend === "passed"` before frontend integration
-- `tests.frontend === "passed"` before marking phase `done`
-- User approval after prototype (batch: deploy target, SSH, CI, domain)
+After subagent Definition of Done:
+
+- `approvals.architecture = true` when `docs/architecture.md` is complete
+- `approvals.apiSpecs = true` when all `docs/{service}/api.yaml` and `db.md` exist
+
+### User-gates
+
+Never advance without explicit user approval for:
+
+- `approvals.requirements`, `techStack`, `pages`, `prototype`, `batchApprovals`
+
+### Test and deploy gates
+
+- `tests.backend === "passed"` before frontend integration (phase B)
+- Deploy complete only after DevOps API smoke via `$baseUrl/api/*` (not 404)
+- `tests.frontend === "passed"` only after Playwright exit 0 against full `state.baseUrl` (include port if non-80)
+- Record `e2eLastRun: { status, baseUrl, at }` after agent 11 succeeds
+- Do not set `phase = done` until `tests.frontend === "passed"`
+
+## Parallel delegation
+
+After `gateway` phase, when `runtime.parallelAgents` is true:
+
+- Launch **07-backend-engineer** × N (per service) **in parallel with**
+- **10-frontend-engineer phase A** (scaffold: copy prototype, API client, pages — mock or OpenAPI types OK)
+
+Then: compose → backend tests → **10 phase B** (live API) → deploy → e2e.
 
 ## Delegation
 
@@ -67,6 +91,7 @@ If delegation mode is `slash-command` or `skill-only`, use **inline-role** unles
 - After prototype: batch all remaining questions (deploy, SSH, infra)
 - Report failures with actionable next steps
 - Max 3 test-fix iterations per phase — then ask user
+- Do **not** ask to approve architecture or API specs — notify user when auto-gate passes
 
 ## References
 
@@ -79,3 +104,4 @@ If delegation mode is `slash-command` or `skill-only`, use **inline-role** unles
 - Implement product code yourself — always delegate
 - Skip phases or gates
 - Let subagents ask the user questions
+- Mark `tests.frontend = passed` without verified Playwright run against `state.baseUrl`

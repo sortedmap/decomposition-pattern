@@ -146,17 +146,17 @@ flowchart LR
     end
 
     subgraph phase3 [Фаза 3: Реализация]
-        MS[Параллельные микросервисы]
+        MS[Backend + FE scaffold параллельно]
         BTests[Backend автотесты]
         Compose[docker-compose]
-        FE[Frontend engineer]
+        FEInt[FE integration]
         Deploy[Запуск локально или сервер]
-        FTests[Frontend автотесты]
+        FTests[Frontend e2e gate]
     end
 
     TZ --> Pages --> Proto --> Review
     Review --> Stack --> DB --> API --> Gateway
-    Gateway --> MS --> BTests --> Compose --> FE --> Deploy --> FTests
+    Gateway --> MS --> Compose --> BTests --> FEInt --> Deploy --> FTests
 ```
 
 ---
@@ -188,19 +188,20 @@ sequenceDiagram
     Orchestrator->>User: Посмотреть прототип, правки?
     User->>Orchestrator: Утверждаю + batch вопросы
     Orchestrator->>Arch: Task: architecture.md
-    Arch-->>Orchestrator: docs/architecture.md
-    par Parallel services
+    Arch-->>Orchestrator: docs/architecture.md (auto-gate)
+    par Backend + FE scaffold
         Orchestrator->>BE: Task: auth-service
         Orchestrator->>BE: Task: catalog-service
+        Orchestrator->>FE: Task: frontend phase A scaffold
     end
     BE-->>Orchestrator: backend/* готов
     Orchestrator->>BTest: Task: backend tests
     BTest-->>Orchestrator: все тесты зелёные
-    Orchestrator->>FE: Task: frontend integration
+    Orchestrator->>FE: Task: frontend phase B integration
     FE-->>Orchestrator: frontend готов
-    Orchestrator->>DevOps: Task: deploy + start
-    DevOps-->>Orchestrator: URL / localhost
-    Orchestrator->>FTest: Task: frontend tests vs running app
+    Orchestrator->>DevOps: Task: deploy + API smoke via baseUrl
+    DevOps-->>Orchestrator: baseUrl (с портом)
+    Orchestrator->>FTest: Task: Playwright vs baseUrl (mandatory gate)
     FTest-->>Orchestrator: все тесты зелёные
     Orchestrator->>User: Готово
 ```
@@ -241,14 +242,14 @@ sequenceDiagram
 | 4. Prototype | Prototype Designer | `npm run dev` работает |
 | 5. Prototype Review | Prototype Reviewer | «Прототип утверждён» |
 | 6. Batch approvals | Orchestrator | deploy, SSH, CI зафиксированы |
-| 7. Architecture | Architect | архитектура утверждена |
-| 8. API Design | API Designer | спеки утверждены |
+| 7. Architecture | Architect | `architecture.md` готов (auto-gate) |
+| 8. API Design | API Designer | все `docs/{service}/api.yaml` (auto-gate) |
 | 9. Gateway | API Designer | `docs/api-gateway.yaml` |
-| 10. Backend | Backend Engineer × N | все сервисы + compose |
+| 10. Backend + FE scaffold | Backend Engineer × N + Frontend (phase A) | все сервисы + frontend scaffold |
 | 11. Backend Tests | Backend Test Engineer | все backend-тесты green |
-| 12. Frontend | Frontend Engineer | FE работает с backend |
-| 13. Deploy / Start | DevOps Engineer | система доступна |
-| 14. Frontend Tests | Frontend Test Engineer | все frontend-тесты green |
+| 12. Frontend integration | Frontend Engineer (phase B) | FE работает с live API |
+| 13. Deploy / Start | DevOps Engineer | baseUrl + API smoke `/api/*` ≠ 404 |
+| 14. Frontend Tests | Frontend Test Engineer | Playwright exit 0 vs `baseUrl` |
 
 Состояние хранится в `.project/state.json` (схема: [templates/project-state.schema.json](templates/project-state.schema.json)).
 
@@ -363,8 +364,8 @@ my-product/
 1. После утверждения прототипа оркестратор спрашивает: **локально или удалённый сервер?**
 2. Для сервера: положите ключ в `.ssh/` проекта, укажите host в `.project/deploy.json`
 3. DevOps agent: `docker compose up -d` (локально) или SSH + compose (удалённо)
-4. Health check всех `/health` endpoints + frontend доступен
-5. Frontend Test Engineer получает `baseUrl` для Playwright
+4. API smoke через **`baseUrl/api/*`** (401 без токена, не 404) + `/health`
+5. Frontend Test Engineer: `PLAYWRIGHT_BASE_URL=state.baseUrl` (с портом!) — обязательный gate перед `done`
 
 Подробнее: [playbooks/06-deploy.md](playbooks/06-deploy.md).
 
@@ -391,7 +392,8 @@ my-product/
 - **Task tool** не гарантирует полную изоляцию subagent'ов — контракты в `.agents/` должны быть строгими
 - **OpenSpec** — локальная dev-зависимость (`npm install`); без неё — fallback на markdown в `docs/`
 - **Параллельные сервисы** — max 4 concurrent Task
-- **Frontend e2e** — только после подтверждённого health check DevOps agent'ом
+- **Frontend e2e** — обязательный gate: Playwright exit 0 против полного `state.baseUrl` (с портом)
+- **Deploy smoke** — DevOps проверяет `$baseUrl/api/*`, не только `:8080/health`
 - **SSH deploy** — только с явного разрешения пользователя
 - **Цикл исправлений тестов** — max 3 итерации per phase, затем эскалация пользователю
 

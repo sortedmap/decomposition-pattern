@@ -39,10 +39,12 @@ Current phase: {phase}
 
 Actions:
 1. Read state and determine next phase
-2. If gate pending — ask user ONE consolidated question set, wait for approval
-3. If phase ready — delegate using `.project/runtime.json` delegation mode (see `platforms/delegation/`)
-4. Update .project/state.json after each completed subagent
-5. Report progress to user in Russian
+2. User-gates only (requirements, techStack, pages, prototype, batchApprovals) — ask ONE consolidated question set, wait for approval
+3. Auto-gates (architecture, apiSpecs) — verify artifacts, set approvals.* = true, advance without asking
+4. If phase ready — delegate using `.project/runtime.json` delegation mode (see `platforms/delegation/`)
+5. Update .project/state.json after each completed subagent
+6. Set tests.frontend = passed ONLY after agent 11 reports Playwright exit 0 vs state.baseUrl
+7. Report progress to user in Russian
 
 Do NOT write application code. Delegate only.
 ```
@@ -52,4 +54,5 @@ Do NOT write application code. Delegate only.
 - All 14 phases completed
 - `state.phase === "done"`
 - `state.tests.backend === "passed"` and `state.tests.frontend === "passed"`
+- `state.e2eLastRun.status === "passed"` with `baseUrl` matching deploy
 - User informed of final URL or localhost instructions

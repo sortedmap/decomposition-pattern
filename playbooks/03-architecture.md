@@ -12,7 +12,7 @@
    - Service table with DB names, aggregates, pages
    - Domain events
 3. Update `.project/state.json` → `services[]`
-4. Gate: user approves architecture
+4. **Auto-gate:** orchestrator sets `approvals.architecture = true` when `architecture.md` is complete
 
 ## Per-service docs (parallel)
 
@@ -24,8 +24,8 @@ For each service in `services[]` (max 4 parallel Tasks):
 ## Gateway
 
 1. Task → API Designer: merge into `docs/api-gateway.yaml`
-2. Single `/api/v1/*` entry, JWT security scheme
-3. Gate: user approves API specs
+2. Single `/api/*` entry, JWT security scheme
+3. **Auto-gate:** orchestrator sets `approvals.apiSpecs = true` when all specs exist
 
 ## DB conventions
 

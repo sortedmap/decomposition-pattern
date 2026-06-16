@@ -39,18 +39,29 @@ Create `.project/runtime.json` during bootstrap — see [bootstrap.md](bootstrap
 | prototype | Delegate: 03-prototype-designer | prototype | npm run dev OK |
 | prototype | Delegate: 04-prototype-reviewer (loop) | prototype_review | user approves OR max 5 iterations |
 | prototype_review | batch questions → deploy.json | batch_approvals | all batch answers recorded |
-| batch_approvals | Delegate: 05-architect | architecture | user approves architecture.md |
-| architecture | Delegate: 06-api-designer × N (parallel if allowed) | api_design | user approves specs |
-| api_design | Delegate: 06-api-designer (gateway) | gateway | api-gateway.yaml exists |
-| gateway | Delegate: 07-backend-engineer × N (parallel if allowed) | backend | all services exist |
-| backend | Delegate: 07-backend-engineer (compose) | backend | docker-compose.yaml |
-| backend | Delegate: 08-backend-test-engineer × N | backend_tests | tests.backend = passed |
-| backend_tests | Delegate: 10-frontend-engineer | frontend | FE works with API |
-| frontend | Delegate: 09-devops-engineer | deploy | baseUrl set, health OK |
-| deploy | Delegate: 11-frontend-test-engineer | frontend_tests | tests.frontend = passed |
+| batch_approvals | Delegate: 05-architect | architecture | **auto:** `docs/architecture.md` complete → `approvals.architecture = true` |
+| architecture | Delegate: 06-api-designer × N (parallel if allowed) | api_design | **auto:** all `docs/{service}/api.yaml` + `db.md` → `approvals.apiSpecs = true` |
+| api_design | Delegate: 06-api-designer (gateway) | gateway | `docs/api-gateway.yaml` exists |
+| gateway | **Parallel:** 07-backend-engineer × N + 10-frontend-engineer (phase A scaffold) | backend | all services exist in `backend/` |
+| backend | Delegate: 07-backend-engineer (compose) | backend | `backend/docker-compose.yaml` |
+| backend | Delegate: 08-backend-test-engineer × N | backend_tests | `tests.backend = passed` |
+| backend_tests | Delegate: 10-frontend-engineer (phase B integration) | frontend | FE works with live API |
+| frontend | Delegate: 09-devops-engineer | deploy | `baseUrl` set, API smoke via `$baseUrl/api/*` OK |
+| deploy | Delegate: 11-frontend-test-engineer | frontend_tests | `tests.frontend = passed` (Playwright exit 0 vs `baseUrl`) |
 | frontend_tests | — | done | notify user |
 
 **Delegate** = follow `.project/runtime.json` → `delegation` mode in `platforms/delegation/`.
+
+### Auto-gates (no user prompt)
+
+After subagent DoD is met, orchestrator sets approval and advances **without asking the user**:
+
+- `architecture` → `approvals.architecture = true`
+- `api_design` → `approvals.apiSpecs = true`
+
+### User-gates (explicit approval required)
+
+- `requirements`, `techStack`, `pages`, `prototype`, `batchApprovals`
 
 ## Batch approvals (after prototype)
 
@@ -81,7 +92,7 @@ Set `approvals.batchApprovals = true`.
 When `runtime.parallelAgents` is true (Cursor, Claude Code, Windsurf):
 
 - API design: max 4 concurrent
-- Backend implementation: max 4 concurrent
+- **After gateway:** backend implementation + frontend scaffold (phase A) — max 4 concurrent total
 - Backend tests: max 4 concurrent
 
 Otherwise run agents **sequentially** (inline-role).
@@ -95,6 +106,8 @@ When `tests.backend === "failed"` or subagent reports failures:
 3. If > 3: ask user how to proceed
 
 Same for `testFixIterations.frontend` with 11-frontend-test-engineer.
+
+**Never set `tests.frontend = "passed"`** unless Playwright exited 0 against `state.baseUrl` (full URL including port).
 
 ## OpenSpec integration
 
@@ -112,8 +125,9 @@ Fallback: write to `docs/requirements.md`, `docs/tasks.md` without OpenSpec CLI.
 ## Completion checklist
 
 - [ ] All services in docker compose healthy
+- [ ] API smoke via `$baseUrl/api/*` (401 without token, not 404)
 - [ ] Frontend at baseUrl loads authenticated routes
 - [ ] Backend tests passed all services
-- [ ] Frontend e2e passed all routes from pages-spec.md
-- [ ] deploy-log.md written
+- [ ] Frontend e2e passed all routes from pages-spec.md against `state.baseUrl`
+- [ ] `docs/deploy-log.md` written with smoke + e2e results
 - [ ] User receives final URL and run instructions

@@ -10,6 +10,7 @@ Design OpenAPI specs and database schemas per microservice. Consolidate gateway 
 - DB schema in `docs/{service}/db.md`
 - Align with `docs/architecture.md` service boundaries
 - Can run in parallel — one Task per service for api.yaml + db.md
+- Do not talk to user — orchestrator auto-gates when all specs exist
 
 ## Inputs
 
@@ -44,7 +45,7 @@ Playbook: playbooks/03-architecture.md
 ```
 Merge all docs/*/api.yaml into docs/api-gateway.yaml.
 Add routing, auth (JWT), CORS. Follow templates/docs/api-gateway.yaml and consolidate service paths.
-Single entry point for frontend at /api/v1/*
+Single entry point for frontend at /api/*
 ```
 
 ## Definition of Done
@@ -52,3 +53,5 @@ Single entry point for frontend at /api/v1/*
 - Every frontend action has corresponding API endpoint
 - db.md matches api.yaml request/response shapes
 - api-gateway.yaml routes to all services
+
+Orchestrator sets `approvals.apiSpecs = true` automatically when all service specs and gateway exist.

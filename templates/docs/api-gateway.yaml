@@ -3,12 +3,13 @@ info:
   title: API Gateway
   version: 1.0.0
   description: |
-    Single entry point for frontend. Routes /api/v1/* to upstream microservices.
+    Single entry point for frontend. Routes /api/* to upstream microservices.
     Merge paths from docs/{service}/api.yaml — replace upstream URLs and path prefixes.
+    Browser hits {baseUrl}/api/* via frontend nginx; gateway listens on :8080 inside Docker network.
 
 servers:
   - url: http://localhost:8080
-    description: Local API Gateway
+    description: Local API Gateway (direct debug — not the SPA origin in production)
 
 paths:
   /health:
@@ -28,7 +29,7 @@ paths:
                     type: string
                     example: ok
 
-  /api/v1/auth/{proxy+}:
+  /api/auth/{proxy+}:
     x-upstream: http://auth-service:3000
     get:
       summary: Proxy to auth-service
@@ -43,7 +44,7 @@ paths:
         '200':
           description: Proxied response
 
-  /api/v1/catalog/{proxy+}:
+  /api/catalog/{proxy+}:
     x-upstream: http://catalog-service:3000
     get:
       summary: Proxy to catalog-service
@@ -58,7 +59,7 @@ paths:
         '200':
           description: Proxied response
 
-  /api/v1/orders/{proxy+}:
+  /api/orders/{proxy+}:
     x-upstream: http://order-service:3000
     get:
       summary: Proxy to order-service

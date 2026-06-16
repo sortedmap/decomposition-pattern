@@ -54,6 +54,14 @@
       }
     },
     "baseUrl": { "type": ["string", "null"] },
+    "e2eLastRun": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["passed", "failed"] },
+        "baseUrl": { "type": "string" },
+        "at": { "type": "string", "format": "date-time" }
+      }
+    },
     "prototypeReviewIterations": { "type": "integer", "maximum": 5 },
     "testFixIterations": {
       "type": "object",

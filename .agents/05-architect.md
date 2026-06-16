@@ -10,6 +10,7 @@ Design microservice architecture using DDD. Map frontend pages to bounded contex
 - UUID primary keys, snake_case columns
 - PostgreSQL 15+ per service
 - Reference patterns in playbooks/03-architecture.md
+- Do not talk to user — orchestrator auto-gates when architecture.md is complete
 
 ## Inputs
 
@@ -54,3 +55,5 @@ Each service gets own PostgreSQL database. No shared DB.
 - Every page mapped to at least one service
 - Service list is implementable (typically 4–10 services for MVP)
 - Domain events documented for cross-service sync
+
+Orchestrator sets `approvals.architecture = true` automatically when DoD is met.
