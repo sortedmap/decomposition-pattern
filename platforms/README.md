@@ -7,9 +7,11 @@ Registry: [registry.json](registry.json) (same IDs as OpenSpec)
 ## Setup (recommended)
 
 ```bash
-npm install -g @fission-ai/openspec   # optional
+npm install
 npm run setup -- --tool cursor --clean
 ```
+
+OpenSpec — локальная dev-зависимость, без глобальной установки.
 
 | Flag | Description |
 |------|-------------|

@@ -5,11 +5,20 @@ OpenSpec хранит живые требования и change-артефакт
 ## Setup
 
 ```bash
-npm install -g @fission-ai/openspec   # optional
+npm install
 npm run setup -- --tool cursor --clean
 ```
 
-`npm run setup` вызывает `openspec init --tools <id>` автоматически (если CLI установлен).
+OpenSpec установлен **локально** (`devDependencies`), без `-g`.
+
+`npm run setup` вызывает `openspec init --tools <id>` из `node_modules/.bin/`.
+
+Вручную:
+
+```bash
+npm run openspec -- init --tools cursor
+npm run openspec -- --version
+```
 
 Перегенерация skill без полного setup:
 
@@ -38,4 +47,4 @@ openspec/
 
 ## Fallback
 
-Если OpenSpec CLI недоступен — оркестратор использует `docs/requirements.md` и `docs/tasks.md`.
+Если `npm install` не выполнен — оркестратор использует `docs/requirements.md` и `docs/tasks.md`.

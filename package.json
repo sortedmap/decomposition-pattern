@@ -4,12 +4,16 @@
   "private": true,
   "description": "Multi-agent framework for AI-assisted product development",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
   },
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "setup:clean": "node scripts/setup.mjs --detect --clean",
     "init:platforms": "node scripts/generate-platform-skills.mjs",
-    "validate": "node scripts/validate-registry.mjs"
+    "validate": "node scripts/validate-registry.mjs",
+    "openspec": "openspec"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "^1.4.1"
   }
 }

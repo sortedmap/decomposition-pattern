@@ -32,7 +32,7 @@ Create `.project/runtime.json` during bootstrap — see [bootstrap.md](bootstrap
 
 | From | Action | To | Gate |
 |------|--------|-----|------|
-| bootstrap | detect platform → runtime.json; openspec init; set projectName | discovery | — |
+| bootstrap | detect platform → runtime.json; `npm run openspec -- init`; set projectName | discovery | — |
 | discovery | Delegate: 01-system-analyst | tech_stack | user approves requirements.md |
 | tech_stack | Delegate: 02-tech-advisor | pages | user approves tech-stack.md |
 | pages | Delegate: 01-system-analyst (pages) | prototype | user approves pages-spec.md |

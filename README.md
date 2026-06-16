@@ -11,9 +11,9 @@
 ### Требования
 
 - Любая AI-среда из [списка OpenSpec](platforms/registry.json) (Cursor, Claude Code, Windsurf, …)
-- Node.js 20+
+- Node.js 20.19+ (требование OpenSpec CLI)
 - Docker и Docker Compose (для фазы deploy)
-- OpenSpec (рекомендуется): `npm install -g @fission-ai/openspec`
+- Зависимости проекта: `npm install` (OpenSpec — локально в `devDependencies`)
 
 ### Запуск с нуля
 
@@ -22,15 +22,15 @@
 git clone https://github.com/YOUR_ORG/decomposition-pattern.git my-product
 cd my-product
 
-# 2. (Опционально) OpenSpec CLI
-npm install -g @fission-ai/openspec
+# 2. Установить зависимости (OpenSpec — только в этом проекте)
+npm install
 
 # 3. Настроить одну AI-среду — в корне появится только её папка (.cursor/, .claude/, …)
-npm run setup -- --tool cursor --clean
+npm run setup
 
 # Альтернативы:
 # npm run setup -- --detect --clean    # угадать среду по окружению
-# npm run setup                          # интерактивный выбор
+# npm run setup -- --tool cursor --clean    # установка для Cursor
 # npm run setup -- --tool claude --skip-openspec   # без openspec init
 ```
 
@@ -39,7 +39,7 @@ npm run setup -- --tool cursor --clean
 | Шаг | Действие |
 |-----|----------|
 | `--clean` | Удаляет папки других платформ (`.claude/`, `.windsurf/`, …) |
-| OpenSpec | `openspec init --tools <id>` (если CLI установлен) |
+| OpenSpec | `npm run openspec -- init --tools <id>` (локальный CLI из `node_modules`) |
 | Skill | Генерирует `{skillsDir}/build-product/SKILL.md` для выбранной среды |
 | Runtime | Пишет `.project/runtime.json` — оркестратор знает режим делегирования |
 
@@ -53,6 +53,7 @@ npm run setup -- --tool cursor --clean
 | `npm run setup -- --tool cursor --clean` | Настройка Cursor, удаление остальных platform-папок |
 | `npm run setup -- --detect --clean` | Автоопределение среды по окружению |
 | `npm run init:platforms -- --tools cursor` | Только перегенерация `SKILL.md` (без OpenSpec и runtime) |
+| `npm run openspec -- <args>` | Локальный OpenSpec CLI (например `init`, `--version`) |
 
 Для GitHub Copilot skill создаётся в `.github/skills/` — при `--clean` удаляется только эта подпапка, не `.github/workflows/`.
 
@@ -267,10 +268,10 @@ OpenSpec — слой живых требований. Агенты читают
 
 ### Инициализация
 
-OpenSpec инициализируется при `npm run setup` (если CLI установлен). При первом `/build-product` оркестратор также может выполнить:
+OpenSpec инициализируется при `npm run setup` (после `npm install`). При первом `/build-product` оркестратор также может выполнить:
 
 ```bash
-openspec init   # если openspec/ ещё нет
+npm run openspec -- init --tools cursor   # если openspec/ ещё не настроен
 ```
 
 ### Команды (в Cursor)

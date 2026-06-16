@@ -171,14 +171,28 @@ function writeRuntimeJson(tool, detected) {
   console.log('  wrote .project/runtime.json');
 }
 
+function resolveOpenspecBin() {
+  const binName = process.platform === 'win32' ? 'openspec.cmd' : 'openspec';
+  const local = join(root, 'node_modules', '.bin', binName);
+  if (existsSync(local)) return local;
+  return null;
+}
+
 function runOpenspecInit(toolId) {
-  const result = spawnSync('openspec', ['init', '--tools', toolId], {
+  const bin = resolveOpenspecBin();
+  if (!bin) {
+    console.warn('\n  openspec not found — run: npm install');
+    console.warn('  Then re-run setup or: npm run openspec -- init --tools', toolId);
+    console.warn('  Using docs/ fallback for now.');
+    return false;
+  }
+  const result = spawnSync(bin, ['init', '--tools', toolId], {
     cwd: root,
     stdio: 'inherit',
     shell: process.platform === 'win32',
   });
   if (result.error?.code === 'ENOENT') {
-    console.warn('\n  openspec CLI not found — using docs/ fallback (npm install -g @fission-ai/openspec)');
+    console.warn('\n  openspec CLI not found — run: npm install');
     return false;
   }
   if (result.status !== 0) {

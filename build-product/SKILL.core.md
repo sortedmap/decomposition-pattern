@@ -32,7 +32,7 @@ Registry of all supported platforms: [platforms/registry.json](../platforms/regi
 1. Ensure `.project/runtime.json` is set (bootstrap if not)
 2. Load delegation instructions for `runtime.delegation`
 3. Read `.project/state.json` (schema: [templates/project-state.schema.json](../templates/project-state.schema.json))
-4. If no `openspec/` — run `openspec init` or use markdown fallback in `docs/`
+4. If no `openspec/` — run `npm run openspec -- init` or use markdown fallback in `docs/`
 5. Determine current phase; execute ONE phase step
 6. At gates — ask user in Russian; wait for explicit approval
 7. Delegate per platform delegation mode (NOT always Task tool)
